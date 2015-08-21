@@ -36,8 +36,7 @@ network.forward = forward
 # Set loss function and optimizer function
 network.SetOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
-# import data
-~~~~~
+# Some operation for import datas
 
 # training
 error_on_trian, accuracy_on_train = network.train(train_data, target)
@@ -55,7 +54,7 @@ import CNN
 import Visualizer as V
 
 # define CNN and train it
-~~~
+# SOME CODES
 
 # instance
 imager = V.Visualizer(network.model, 'conv1')
