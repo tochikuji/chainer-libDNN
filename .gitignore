@@ -1,0 +1,4 @@
+*.pyc
+*.png
+*.bmp
+__pychache__/
