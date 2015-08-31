@@ -2,13 +2,13 @@
 ## Description
 General utilities for depp neural network framework chainer.
 
-It contains well-usable network training interface and visualizer class for Convolution neural network.
+It contains well-usable network training interface for general neural networks and visualizer class for Convolution neural network.
 
 # Usage
 ## Define networks
 You have to define network structure and specify loss-function and optimizer method.
 It will be ready for train.
-```
+```python
 import CNN
 import chainer
 import chainer.functions as F
@@ -49,7 +49,7 @@ print(accuracy_on_test)
 
 ## Visualization
 Visualizer class provides filter visualization for Convolution neural network(CNN).
-```
+```python
 import CNN
 import Visualizer as V
 
