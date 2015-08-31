@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append('..')
+
 import CNN
 import chainer
 import numpy
@@ -15,13 +19,13 @@ def forward(self, x):
 
     return y
 
-mlp = CNN.CNNBase(model, is_gpu=-1)
+mlp = CNN.CNNBase(model, is_gpu=0)
 mlp.forward = forward
 mlp.SetOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 arr = []
 t = []
-for i in range(1000):
+for i in range(10000):
     x, y = (numpy.random.rand() - 0.5), (numpy.random.rand() - 0.5)
     arr.append(numpy.array([x, y]))
     if (x < 0. and y < 0.) or (x > 0. and y > 0.):

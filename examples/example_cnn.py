@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append('..')
+
 import CNN
 import chainer
 import numpy
