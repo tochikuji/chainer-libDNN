@@ -28,7 +28,7 @@ class Visualizer(object):
 
         for i in range(N):
             plt.subplot(nrow, nrow, i + 1)
-            plt.imshow(self.bitmap[i], cmap=matplotlib.cm.gray)
+            plt.imshow(self.bitmap[i], interpolation='none', cmap=matplotlib.cm.gray)
 
         plt.show()
 
