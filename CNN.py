@@ -13,10 +13,15 @@ class CNNBase(object):
         self.model = model
         self.is_gpu = is_gpu
 
-    # 抽象メソッド
-    # インスタンス・子クラスで再定義のこと
+    # pure virtual method that is feedforward calculation
+    # DO redefine this method in instance or delivered classes
     @abstractmethod
     def forward(self, x):
+        pass
+
+    # feedforward method to visualize layer activation
+    @abstractmethod
+    def output(self, x, layer):
         pass
 
     def validate(self, x_data, y_data, train=True):
@@ -25,7 +30,7 @@ class CNNBase(object):
 
         return self.loss_function(h, t), F.accuracy(h, t)
 
-    def SetOptimizer(self, loss_function, optimizer=Opt.Adam):
+    def setOptimizer(self, loss_function, optimizer=Opt.Adam):
         if self.is_gpu >= 0:
             chainer.cuda.init(self.is_gpu)
             self.model = self.model.to_gpu()
@@ -33,7 +38,6 @@ class CNNBase(object):
         self.loss_function = loss_function
 
         self.optimizer.setup(self.model.collect_parameters())
-
 
     def train(self, x_data, y_data, batchsize=100, action=(lambda: None)):
         # num of x_data
