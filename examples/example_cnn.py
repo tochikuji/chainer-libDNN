@@ -13,9 +13,9 @@ import Visualizer
 
 
 model = chainer.FunctionSet(
-    conv1=F.Convolution2D(1, 30, 5),
-    bn1=F.BatchNormalization(30),
-    conv2=F.Convolution2D(30, 30, 3, pad=1),
+    conv1=F.Convolution2D(1, 15, 5),
+    bn1=F.BatchNormalization(15),
+    conv2=F.Convolution2D(15, 30, 3, pad=1),
     bn2=F.BatchNormalization(30),
     conv3=F.Convolution2D(30, 64, 3, pad=1),
     fl4=F.Linear(576, 576),
@@ -33,13 +33,13 @@ def forward(self, x):
 
     return y
 
-cnn = CNN.CNNBase(model, is_gpu=0)
-cnn.forward = forward
-cnn.setOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
+cnn = CNN.CNNBase(model, is_gpu=-1)
+cnn.set_forward(forward)
+cnn.set_optimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 arr = []
 t = []
-for i in range(1000):
+for i in range(100):
     x = numpy.random.rand(50, 50)
     x = numpy.array([x])
     arr.append(x)
@@ -68,7 +68,11 @@ def output(self, x, layer):
     return None
 
 
-imager = Visualizer.Visualizer(cnn.model, 'conv1')
-imager.convert_filters()
+cnn.set_output(output)
+imager = Visualizer.Visualizer(cnn)
+imager.convert_filters('conv1')
 imager.plot_filters()
 imager.write_filters(path='./filter', identifier='filter_', type='bmp')
+
+imager.plot_output(numpy.array(arr).astype(numpy.float32)[:3], layer=1)
+imager.write_output(numpy.array(arr).astype(numpy.float32), layer=2, path='./outputs', identifier='l1_', type='bmp')

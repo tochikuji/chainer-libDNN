@@ -21,7 +21,7 @@ def forward(self, x):
     return y
 
 mlp = CNN.CNNBase(model, is_gpu=-1)
-mlp.forward = forward
+mlp.set_forward(forward)
 mlp.set_optimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 arr = []

@@ -6,6 +6,7 @@ import chainer
 import numpy
 import chainer.functions as F
 import chainer.optimizers as Opt
+import types
 
 
 class CNNBase(object):
@@ -24,9 +25,15 @@ class CNNBase(object):
     def output(self, x, layer):
         pass
 
+    def set_forward(self, func):
+        self.forward = types.MethodType(func, self, CNNBase)
+
+    def set_output(self, func):
+        self.output = types.MethodType(func, self, CNNBase)
+
     def validate(self, x_data, y_data, train=True):
         x, t = chainer.Variable(x_data, volatile=not train), chainer.Variable(y_data, volatile=not train)
-        h = self.forward(self, x)
+        h = self.forward(x)
 
         return self.loss_function(h, t), F.accuracy(h, t)
 
