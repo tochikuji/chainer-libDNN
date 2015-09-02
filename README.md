@@ -1,6 +1,6 @@
 # Chainer-libCNN
 ## Description
-General utilities for depp neural network framework chainer.
+General utilities for deep neural network framework chainer.
 
 It contains well-usable network training interface for general neural networks and visualizer class for Convolution neural network.
 
@@ -34,7 +34,7 @@ network = CNN.CNNBase(model, is_gpu=0)
 # Override instance forward method
 network.forward = forward
 # Set loss function and optimizer function
-network.SetOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
+network.setOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 # Some operation for import datas
 
@@ -84,7 +84,7 @@ Define feedforward Computation as you like. and it must return output of neural 
 You needn't to care about `is_gpu`, it will be automatically converted properly.
 
 #### Configure optimizer
-`SetOptimizer(loss_function, optimizer=Opt.Adam)`  
+`setOptimizer(loss_function, optimizer=Opt.Adam)`  
 1 argument loss_function is neccesary.  
 `loss_function` expects `chainer.function` instance which is function object.  
 `optimizer` expects optimizer function. If you ignore this argument, this will default to  `chainer.optimizers.Adam`.
