@@ -30,14 +30,14 @@ class CNNBase(object):
 
         return self.loss_function(h, t), F.accuracy(h, t)
 
-    def setOptimizer(self, loss_function, optimizer=Opt.Adam):
+    def set_optimizer(self, loss_function, optimizer=Opt.Adam):
         if self.is_gpu >= 0:
             chainer.cuda.init(self.is_gpu)
             self.model = self.model.to_gpu()
         self.optimizer = optimizer()
         self.loss_function = loss_function
 
-        self.optimizer.setup(self.model.collect_parameters())
+        self.optimizer.setup(self.model)
 
     def train(self, x_data, y_data, batchsize=100, action=(lambda: None)):
         # num of x_data
@@ -56,7 +56,7 @@ class CNNBase(object):
                 x_batch = chainer.cuda.to_gpu(x_batch)
                 y_batch = chainer.cuda.to_gpu(y_batch)
 
-            # 勾配の初期化
+            # initialize optimizer gradients
             self.optimizer.zero_grads()
             err, acc = self.validate(x_batch, y_batch, train=True)
 

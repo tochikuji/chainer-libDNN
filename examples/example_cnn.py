@@ -1,3 +1,5 @@
+# CNN class example of Convolution Neural Network to ramdom datas.
+# This is also example of Visualizer module
 import sys
 
 sys.path.append('..')
@@ -47,7 +49,26 @@ for i in range(1000):
 print(cnn.train(numpy.array(arr).astype(numpy.float32), numpy.array(t).astype(numpy.int32)))
 print(cnn.test(numpy.array(arr).astype(numpy.float32), numpy.array(t).astype(numpy.int32)))
 
+
+def output(self, x, layer):
+    h = F.relu(model.bn1(model.conv1(x)))
+    if layer == 1:
+        return h
+
+    h = F.max_pooling_2d(h, 2)
+    h = F.relu(model.bn2(model.conv2(h)))
+    if layer == 2:
+        return h
+
+    h = F.max_pooling_2d(h, 2)
+    h = F.relu(model.conv3(h))
+    if layer == 3:
+        return h
+
+    return None
+
+
 imager = Visualizer.Visualizer(cnn.model, 'conv1')
-imager.convert(height=5, width=5)
-imager.mplplot()
-imager.write_file(path='./filter', identifier='filter_', type='bmp')
+imager.convert_filters()
+imager.plot_filters()
+imager.write_filters(path='./filter', identifier='filter_', type='bmp')

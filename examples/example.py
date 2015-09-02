@@ -1,3 +1,4 @@
+# CNN module example of XOR classification with Multi Layer Perceptron
 import sys
 
 sys.path.append('..')
@@ -19,9 +20,9 @@ def forward(self, x):
 
     return y
 
-mlp = CNN.CNNBase(model, is_gpu=0)
+mlp = CNN.CNNBase(model, is_gpu=-1)
 mlp.forward = forward
-mlp.setOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
+mlp.set_optimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 arr = []
 t = []

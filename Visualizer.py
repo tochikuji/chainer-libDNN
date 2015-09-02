@@ -12,7 +12,7 @@ class Visualizer(object):
         self.model = model
         self.layer = model[layer]
 
-    def convert(self, height=0, width=0):
+    def convert_filters(self, height=0, width=0):
         self.bitmap = []
         weight = chainer.cuda.to_cpu(self.layer.W)
         for bitmap in weight:
@@ -21,7 +21,7 @@ class Visualizer(object):
             else:
                 self.bitmap.append(bitmap[0])
 
-    def mplplot(self):
+    def plot_filters(self):
         N = len(self.bitmap)
         nrow = int(numpy.sqrt(N)) + 1
 
@@ -31,7 +31,7 @@ class Visualizer(object):
 
         plt.show()
 
-    def write_file(self, path='./', identifier='img', type='bmp'):
+    def write_filters(self, path='./', identifier='img', type='bmp'):
         N = len(self.bitmap)
         # 指定する最大のファイルインデックスサイズ
         maxlen = int(numpy.log10(N)) + 1
