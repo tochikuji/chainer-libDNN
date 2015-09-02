@@ -13,7 +13,7 @@ import Visualizer
 model = chainer.FunctionSet(
     conv1=F.Convolution2D(1, 30, 5),
     bn1=F.BatchNormalization(30),
-    conv2=F.Convolution2D(30, 30, 3,pad=1),
+    conv2=F.Convolution2D(30, 30, 3, pad=1),
     bn2=F.BatchNormalization(30),
     conv3=F.Convolution2D(30, 64, 3, pad=1),
     fl4=F.Linear(576, 576),
@@ -33,7 +33,7 @@ def forward(self, x):
 
 cnn = CNN.CNNBase(model, is_gpu=0)
 cnn.forward = forward
-cnn.SetOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
+cnn.setOptimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 arr = []
 t = []
