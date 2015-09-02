@@ -11,6 +11,7 @@ class Visualizer(object):
     def __init__(self, model, layer):
         self.model = model
         self.layer = model[layer]
+        plt.subplots_adjust(hspace=0.5)
 
     def convert_filters(self, height=0, width=0):
         self.bitmap = []
@@ -26,7 +27,11 @@ class Visualizer(object):
         nrow = int(numpy.sqrt(N)) + 1
 
         for i in range(N):
-            plt.subplot(nrow, nrow, i + 1)
+            ax = plt.subplot(nrow, nrow, i + 1)
+            ax.set_title('filter %d' % (i + 1), fontsize=10)
+            ax.get_xaxis().set_visible(False)
+            ax.get_yaxis().set_visible(False)
+
             plt.imshow(self.bitmap[i], interpolation='none', cmap=matplotlib.cm.gray)
 
         plt.show()
