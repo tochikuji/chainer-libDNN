@@ -15,7 +15,6 @@ class Visualizer(object):
     def convert(self, height=0, width=0):
         self.bitmap = []
         weight = chainer.cuda.to_cpu(self.layer.W)
-        print(weight.shape)
         for bitmap in weight:
             if height or width:
                 self.bitmap.append(bitmap[0].reshape(height, width))
