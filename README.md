@@ -57,6 +57,9 @@ error_on_trian, accuracy_on_train = network.train(train_data, target)
 error_on_test, accuracy_on_test = network(test_data, target)
 
 print(accuracy_on_test)
+
+# save trained network parameters
+network.save_param('network.param.npy')
 ```
 
 ## Visualization
@@ -135,7 +138,7 @@ This method will override `CNNBase.output` as specified feedforward function.
 `loss_function` expects `chainer.function` instance which is function object.  
 `optimizer` expects optimizer function. If you ignore this argument, this will default to  `chainer.optimizers.Adam`.
 
-#### Train
+#### Train network
 `train(self, x_data, y_data, batchsize=100, action=(lambda: None))`  
 2 arguments `x_data, y_data` are necessary.  
 `x_data` : training data, `y_data`: target value, isa numpy.array;  
@@ -143,9 +146,19 @@ This method will override `CNNBase.output` as specified feedforward function.
 `action` expects function object. This will be called on end of  minibatch training each time.  
 
 It returns error and accuracy ratio for training data.
-#### Test
+#### Test/Validate network
 `test(self, x_data, y_data, action=(lambda: None))`  
 It returns error and accuracy ratio for test data to validate training result.
+
+#### Save trained network parameters to file
+`save_param(self, dst)`  
+1 argument `dst` is optional that specifies destination.  
+It will be './network.param.npy' by default.
+
+#### Load trained network parameters from file
+`load_param(self, src)`  
+1 argument `src` is optional that specifies source file.  
+It will be './network.param.npy' same as `save_param` by default.
 
 ## Visualizer
 #### Constructor / Initializer
