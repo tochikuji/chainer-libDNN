@@ -7,6 +7,7 @@ import numpy
 import chainer.functions as F
 import chainer.optimizers as Opt
 import types
+import os.path
 
 
 class CNNBase(object):
@@ -84,3 +85,16 @@ class CNNBase(object):
         action()
 
         return float(chainer.cuda.to_cpu(err.data)), float(chainer.cuda.to_cpu(acc.data))
+
+    # save trained network parameters to file
+    def save_param(self, dst='./network.param.npy'):
+        param = numpy.array(self.model.parameters)
+        numpy.save(dst, param)
+
+    # load pre-trained network parameters from file
+    def load_param(self, src='./network.param.npy'):
+        if not os.path.exists(src):
+            raise IOError('specified parameter file does not exists')
+
+        param = numpy.load(src)
+        self.model.copy_parameters_from(param)

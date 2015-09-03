@@ -68,7 +68,6 @@ class Visualizer(object):
 
     def plot_output(self, x, layer):
         output = self.__apply_filter(x, layer)
-        print(output.shape)
         N = output.shape[0] * output.shape[1]
         nrow = int(numpy.sqrt(N)) + 1
 
