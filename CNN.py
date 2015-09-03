@@ -88,7 +88,7 @@ class CNNBase(object):
 
     # save trained network parameters to file
     def save_param(self, dst='./network.param.npy'):
-        param = numpy.array(self.model.parameters)
+        param = numpy.array(self.model.to_cpu().parameters)
         numpy.save(dst, param)
 
     # load pre-trained network parameters from file
@@ -98,3 +98,7 @@ class CNNBase(object):
 
         param = numpy.load(src)
         self.model.copy_parameters_from(param)
+
+        # by this process, model parameters is cpu_array now
+        if self.is_gpu >= 0:
+            self.model = self.model.to_gpu()
