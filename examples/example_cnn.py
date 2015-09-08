@@ -76,5 +76,6 @@ imager.write_filters(path='./filter', identifier='filter_', type='bmp')
 
 imager.plot_output(numpy.array(arr).astype(numpy.float32)[:3], layer=1)
 imager.write_output(numpy.array(arr).astype(numpy.float32), layer=2, path='./outputs', identifier='l1_', type='bmp')
+imager.write_activation(arr[0], 2)
 
 cnn.save_param()

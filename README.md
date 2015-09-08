@@ -200,5 +200,10 @@ This shows all filtered images (number of images: x.shape[0]) * (number of outpu
 `identifier` is a identifier(prefix) of image files. like 'idenfier\_(imagenum)\_f(filternum).jpg'  
 `type` is a image data format. It will be Windows Bitmap Image format by default.  
 
+#### Write layer activation for an image
+`Visualizer.write_activation(self, x, layer, path, identifier, type)`  
+It has only one difference from `write_output` that is source image would be expected only one. (shape dim = 3)  
+It requires parameters same as `write_output`.
+
 ## Author
 Aiga SUZUKI\<ai-suzuki@aist.go.jp, tochikuji@gmail.com> (a.k.a. tochikuji)  

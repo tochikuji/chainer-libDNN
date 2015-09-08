@@ -107,3 +107,20 @@ class Visualizer(object):
 
                 filename = path + '/' + identifier + tform.format(j) + '_f' + fform.format(i) + '.' + type
                 cv2.imwrite(filename, bitmap)
+
+    def write_activation(self, x, layer, path='./', identifier='img_', type='bmp'):
+        output = self.__apply_filter(numpy.array([x]).astype(numpy.float32), layer)
+        fform = '{0:0>' + str(int(numpy.log10(output.shape[1])) + 1) + '}'
+
+        # filter num
+        i = 0
+        for img in output[0]:
+            i += 1
+            bitmap = chainer.cuda.to_cpu(img)
+            fmax = numpy.max(bitmap)
+            fmin = numpy.min(bitmap)
+
+            bitmap = ((bitmap - fmin) * 0xff / (fmax - fmin)).astype(numpy.uint8)
+
+            filename = path + '/' + identifier + 'f' + fform.format(i) + '.' + type
+            cv2.imwrite(filename, bitmap)
