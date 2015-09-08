@@ -53,6 +53,10 @@ class Visualizer(object):
             filename = path + '/' + identifier + form.format(i) + '.' + type
             cv2.imwrite(filename, self.bitmap[i])
 
+    def save_raw_filter(self, dst):
+        for i in range(len(self.bitmap)):
+            numpy.savetxt(dst + '/%d' % (i + 1) + '.csv', self.bitmap[i], delimiter=',')
+
     def __apply_filter(self, x, layer):
         if self.nnbase.is_gpu >= 0:
             x = chainer.cuda.to_gpu(x)

@@ -185,6 +185,12 @@ All arguments are optional.
 `type` is a image data format. It will be Windows Bitmap Image format by default.  
 We recommend you to use uncompressed formats(e.g. bmp, tiff, pgm etc.)
 
+#### Write filters on CSV
+`Visualizer.save_raw_filter(self, dst)`  
+For maestri of MATLAB.  
+1 argument `dst`, a path to save dir is neccesary.  
+And also need `convert_filters` in advance.
+
 #### View layer activations on matplotlib
 `Visualizer.plot_output(self, x, layer)`  
 View layer activations on (trained) network with matplotlib for inputs `x`.
