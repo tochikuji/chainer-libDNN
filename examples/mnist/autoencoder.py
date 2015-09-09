@@ -27,7 +27,7 @@ def forward(self, x, is_train):
 
     return h
 
-ae = AutoEncoder(model)
+ae = AutoEncoder(model, gpu=0)
 ae.set_forward(forward)
 
 mnist = fetch_mldata('MNIST original', data_home='.')
