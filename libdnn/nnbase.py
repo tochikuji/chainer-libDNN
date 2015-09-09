@@ -35,13 +35,17 @@ class NNBase(object):
     def __output(self, x, layer):
         pass
 
-    def output(self, x_data):
+    def output(self, x_data, layer):
         if self.gpu >= 0:
             x_data = chainer.cuda.to_gpu(x_data)
 
         x = chainer.Variable(x_data)
 
-        return self.__output(x)
+        act = self.__output(x, layer)
+        if act is None:
+            raise ValueError("Network has returned strange value, invalid layer may be specified")
+
+        return act
 
     def set_forward(self, func):
         self.forward = MethodType(func, self, )
