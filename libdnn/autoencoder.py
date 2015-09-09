@@ -7,15 +7,15 @@ import chainer
 import chainer.functions as F
 import chainer.optimizers as Opt
 import numpy
-from nnbase import NNBase
+from libdnn.nnbase import NNBase
 
 
 class AutoEncoder(NNBase):
     def __init__(self, model, gpu=-1):
         NNBase.__init__(self, model, gpu)
 
-        self.optimizer = Opt.Adam
-        self.opt_param = {}
+        self.optimizer = Opt.Adam()
+        self.optimizer.setup(self.model)
 
         self.loss_function = F.mean_squared_error
         self.loss_param = {}

@@ -48,18 +48,18 @@ class NNBase(object):
         return act
 
     def set_forward(self, func):
-        self.forward = MethodType(func, self, )
+        self.__forward = MethodType(func, self, )
 
     def set_output(self, func):
-        self.output = MethodType(func, self, NNBase)
+        self.__output = MethodType(func, self, NNBase)
 
     def set_loss_function(self, func, param={}):
         self.loss_function = func
         self.loss_param = param
 
     def set_optimizer(self, func, param={}):
-        self.optimizer = func
-        self.opt_param = param
+        self.optimizer = func(**param)
+        self.optimizer.setup(self.model)
 
     # save trained network parameters to file
     def save_param(self, dst='./network.param.npy'):

@@ -6,15 +6,15 @@ import chainer
 import numpy
 import chainer.functions as F
 import chainer.optimizers as Opt
-from nnbase import NNBase
+from libdnn.nnbase import NNBase
 
 
 class Regressor(NNBase):
     def __init__(self, model, gpu=-1):
         NNBase.__init__(self, model, gpu)
 
-        self.optimizer = Opt.Adam
-        self.opt_param = {}
+        self.optimizer = Opt.Adam()
+        self.optimizer.setup(self.model)
 
         self.loss_function = F.softmax_cross_entropy
         self.loss_param = {}
@@ -25,7 +25,7 @@ class Regressor(NNBase):
         if self.gpu >= 0:
             t_data = chainer.cuda.to_gpu(t_data)
 
-        t = chainer.variable(t_data)
+        t = chainer.Variable(t_data)
 
         return self.loss_function(y, t, **self.loss_param), F.accuracy(y, t)
 
