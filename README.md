@@ -8,7 +8,7 @@ It contains well-usable network training interface for general neural networks a
 Minimum requirements:  
 
 - Python 2.7 or 3.4 later
-- Chainer and minimum dependencies
+- Chainer(>= 1.2.0) and minimum dependencies
 - cv2: opencv python interface (Visualizer)
 - matplotlib (Visualizer)
 
