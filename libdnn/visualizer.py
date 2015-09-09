@@ -8,9 +8,9 @@ import cv2
 
 
 class Visualizer(object):
-    def __init__(self, model):
-        self.nnbase = model
-        self.model = model.model
+    def __init__(self, network):
+        self.nnbase = network
+        self.model = network.model
 
         plt.subplots_adjust(hspace=0.5)
 
