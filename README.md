@@ -7,21 +7,24 @@ It contains well-usable network training interface for general neural networks a
 ## Requirements
 Minimum requirements:  
 
-- Python 2.7 or 3.4 later
-- Chainer and minimum dependencies
+- Python 2.7 or 3.4 later (This has 2 and 3 compatibility)
+- Chainer(>= 1.2.0) and minimum dependencies
 - cv2: opencv python interface (Visualizer)
 - matplotlib (Visualizer)
 
+## Installation
+`python setup.py install` 
+
 ## License
 This software is released under MIT License.  
-For more details about license, see 'LICENSE'.
+For more details about license, refer to 'LICENSE'.
 
 # Usage
 ## Define networks
 You have to define network structure and specify loss-function and optimizer method.
 It will be ready for train.
 ```python
-import CNN
+from libdnn import Classifier
 import chainer
 import chainer.functions as F
 import chainer.optimizers as Opt
@@ -41,17 +44,15 @@ def forward(self, x):
     
     return y
 
-# Generate instance
-network = CNN.CNNBase(model, is_gpu=0)
+# Generate instance (GPGPU enabled)
+network = Classifier(model, gpu=0)
 # Override instance forward method
 network.set_forward(forward)
-# Set loss function and optimizer function
-network.set_optimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
 
 # Some operation to import data
 
 # training
-error_on_trian, accuracy_on_train = network.train(train_data, target)
+error_on_train, accuracy_on_train = network.train(train_data, target)
 
 # test
 error_on_test, accuracy_on_test = network(test_data, target)
@@ -66,32 +67,30 @@ network.save_param('network.param.npy')
 Visualizer class provides filter visualization for Convolution neural network(CNN).
 
 ```python
-import CNN
-import Visualizer as V
+from libdnn import Classifier
+import libdnn.Visualizer as V
 
 # define CNN and train it
 # SOME CODES
 
 # define forwarding function that returns specified layer output
 def output(self, x, layer):
-    h = F.relu(network.conv1(x))
+    h = network.conv1(x)
     if layer == 1:
         return h
 
-    h = F.max_pooling_2d(h, 2)
+    h = F.max_pooling_2d(F.relu(h), 2)
     h = ...
 
 network.set_output(output)
 
 # instance
 imager = V.Visualizer(network)
-# generate filter matrix
-imager.convert_filters('conv1')
 
 # view all filters on matplotlib.pyplot.imshow
-imager.plot_filters()
+imager.plot_filters('conv1')
 # write filter to image file
-imager.write_filters(path='./filter_img', identifier='img_', type='bmp')
+imager.write_filters('conv1', path='./filter_img', identifier='img_', type='bmp')
 
 # view layer activation by all filters
 imager.plot_output(data[:2], layer=1)
@@ -100,20 +99,24 @@ imager.write_output(data, layer=2, path='./output_img', identifier='l2_', type='
 ```
 
 # References
-## CNNBase
+## Classifier, Regressor, AutoEncoder
+There are 3 types of network templates according to neural network object, Classification, Regression, and AutoEncoder tasks.  
+Each class has almost same interfaces like below.  
+For more detailed usage, please refer to examples.
+
 #### Constractor / Initializer
-`CNNBase.__init__(self, model, is_gpu=-1)`  
+`__init__(self, model, gpu=-1)`  
 1 argument `model` is neccesary.  
 `model` expects instance of `chainer.FunctionSet` (Neural network structure)  
-`is_gpu` is optional. if `is_gpu >= 0` is True, most network culculation will be processed by CUDA computation.
-If you want to use GPGPU, set `is_gpu` as your CUDA device ID.
+`gpu` is optional. if `gpu >= 0` is True, most network culculation will be processed by CUDA computation.
+If you want to use GPGPU, set `gpu` as your CUDA device ID.
 
 #### Feedforwarding method
-`@abstructmethod forward(self, x)`  
+`@abstructmethod forward(self, x, train)`  
 It is pure virtual function, you must override this method on instance or subclass/derivered class by `set_forward`.  
-2 arguments needed, `self` is a magic variable, and x, is `chainer.Variable` instance.  
+3 arguments needed, `self` is a magic variable, `x`, is `chainer.Variable` instance and `train` is training stage flag (some networks e.g. AutoEncoder needed is this is training input or not).  
 Define feedforward Computation as you like. and it must return output of neural network(isa `chainer.Variable`).  
-You needn't to care about `is_gpu`, it will be automatically converted properly.
+You needn't to care about `gpu`, it will be automatically converted properly.
 
 #### Override forward method
 `set_forward(self, func)`  
@@ -125,18 +128,26 @@ This method will override `CNNBase.forward` as specified feedforward function.
 It it also pure virtual function, that must be Overridden by `set_output`. It is only used for visualization layer output images in `Visualizer` class.
 If you won't use these features, it will be unnecessary.  
 3 arguments is needed, `self` is a magic variable, x, isa `chainer.Variable` instance, layer is a layer specification flag (that you use in your implementation).  
-This will be similar to `forward` function in most case. But do *NOT* reuse `forward` function because of interference CUDA optimization.
+This will be similar to `forward` function in most case. But do *NOT* reuse as `forward` function because of interference CUDA optimization.
 
 #### Override forward method
 `set_forward(self, func)`  
 This method will override `CNNBase.output` as specified feedforward function.  
 1 argument, isa `function` is needed. You needn't to care about use GPU whether or not.
 
+#### Configure loss_function
+`set_loss_function(self, func, param={})`  
+1 argument `func` is neccesary.  
+This expects loss function object in `chainer.functions`.  
+`param` is optional. This expects dictionary that specifies loss function parameters.  
+If you didn't specify loss function by this method, it will be set in network definition automatically. 
+
 #### Configure optimizer
-`set_optimizer(self, loss_function, optimizer=Opt.Adam)`  
-1 argument loss_function is neccesary.  
-`loss_function` expects `chainer.function` instance which is function object.  
-`optimizer` expects optimizer function. If you ignore this argument, this will default to  `chainer.optimizers.Adam`.
+`set_optimizer(self, optimizer, param={})`  
+1 argument `optimizer` is neccesary.  
+This expects optimizer function object in `chainer.optimiers`.  
+`param` is optional. This expects dictionary that specifies optimizer parameter like `{lr: 0.01, rho: 0.9}`.  
+If you didn't specify optimizer function by this method, in most cases, network will use `chainer.optimizers.Adam` by default.
 
 #### Train network
 `train(self, x_data, y_data, batchsize=100, action=(lambda: None))`  
@@ -174,12 +185,14 @@ height, width is optional. If you didn't specify, filter size will be auto-detec
 In most cases, you needn't specify these value explicitly.
 
 #### View filters on matplotliib
-`Visualizer.plot_filters(self)`  
-View all filters on matplotlib. It will break program running.
+`Visualizer.plot_filters(self, layer)`  
+View all filters on matplotlib.  
+1 argument `layer` is neccesary. `layer` expects a name of layer that you declared network definition.  
+This will break program running by default.
 
 #### Write filters to image file
-`Visualizer.write_filters(self, path='./', identifier='img', type='bmp')`  
-All arguments are optional.  
+`Visualizer.write_filters(self, layer, path='./', identifier='img', type='bmp')`  
+1 argument `layer` is necessary, same as `plot_filters`.  
 `path` is a path to store images. It will store current directory by default.  
 `identifier` is a identifier(prefix) of image files. like 'idenfier_00xxx.jpg'  
 `type` is a image data format. It will be Windows Bitmap Image format by default.  
@@ -200,7 +213,7 @@ View layer activations on (trained) network with matplotlib for inputs `x`.
 This shows all filtered images (number of images: x.shape[0]) * (number of output channels). Watch out for it.
 
 #### Write layer activations to image files
-`Visualizer.plot_output(self, x, layer, path, identifier, type)`  
+`Visualizer.write_output(self, x, layer, path, identifier, type)`  
 2 arguments, `x`, `layer` are necessary same as `plot_output` above.  
 `path` is a path to store images. It will store current directory by default.  
 `identifier` is a identifier(prefix) of image files. like 'idenfier\_(imagenum)\_f(filternum).jpg'  
@@ -212,4 +225,4 @@ It has only one difference from `write_output` that is source image would be exp
 It requires parameters same as `write_output`.
 
 ## Author
-Aiga SUZUKI\<ai-suzuki@aist.go.jp, tochikuji@gmail.com> (a.k.a. tochikuji)  
+Aiga SUZUKI\<ai-suzuki@aist.go.jp, tochikuji@gmail.com>
