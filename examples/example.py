@@ -3,26 +3,28 @@ import sys
 
 sys.path.append('..')
 
-import CNN
 import chainer
 import numpy
 import chainer.functions as F
 import chainer.optimizers as Opt
+from libdnn import Classifier
 
 
+# multi layer perceptron
 model = chainer.FunctionSet(l1=F.Linear(2, 100), l2=F.Linear(100, 100), l3=F.Linear(100, 2))
 
 
-def forward(self, x):
+# define forwarding method
+def forward(self, x, train):
     h = F.relu(self.model.l1(x))
     h = F.relu(self.model.l2(h))
     y = self.model.l3(h)
 
     return y
 
-mlp = CNN.CNNBase(model, is_gpu=-1)
+mlp = Classifier(model, gpu=-1)
 mlp.set_forward(forward)
-mlp.set_optimizer(loss_function=F.softmax_cross_entropy, optimizer=Opt.Adam)
+mlp.set_optimizer(Opt.AdaDelta, {'rho': 0.9})
 
 arr = []
 t = []

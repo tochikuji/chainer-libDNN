@@ -8,23 +8,21 @@ import cv2
 
 
 class Visualizer(object):
-    def __init__(self, model):
-        self.nnbase = model
-        self.model = model.model
+    def __init__(self, network):
+        self.nnbase = network
+        self.model = network.model
 
         plt.subplots_adjust(hspace=0.5)
 
-    def convert_filters(self, layer, height=0, width=0):
+    def __convert_filters(self, layer):
         layer = self.model[layer]
         self.bitmap = []
         weight = chainer.cuda.to_cpu(layer.W)
         for bitmap in weight:
-            if height or width:
-                self.bitmap.append(bitmap[0].reshape(height, width))
-            else:
-                self.bitmap.append(bitmap[0])
+            self.bitmap.append(bitmap[0])
 
-    def plot_filters(self):
+    def plot_filters(self, layer):
+        self.__convert_filters(layer)
         N = len(self.bitmap)
         nrow = int(numpy.sqrt(N)) + 1
 
@@ -38,9 +36,10 @@ class Visualizer(object):
 
         plt.show()
 
-    def write_filters(self, path='./', identifier='img', type='bmp'):
+    def write_filters(self, layer, path='./', identifier='img', type='bmp'):
+        self.__convert_filters(layer)
         N = len(self.bitmap)
-        # 指定する最大のファイルインデックスサイズ
+        # length of file indexes
         maxlen = int(numpy.log10(N)) + 1
         form = '{0:0>' + str(maxlen) + '}'
 
@@ -58,14 +57,7 @@ class Visualizer(object):
             numpy.savetxt(dst + '/%d' % (i + 1) + '.csv', self.bitmap[i], delimiter=',')
 
     def __apply_filter(self, x, layer):
-        if self.nnbase.is_gpu >= 0:
-            x = chainer.cuda.to_gpu(x)
-
-        x = chainer.Variable(x, volatile=True)
-
         output = self.nnbase.output(x, layer)
-        if output is None:
-            raise Exception("invalid layer was specified.")
 
         # chainer.Variable -> numpy.ndarray (of GPUArray)
         return chainer.cuda.to_cpu(output).data
