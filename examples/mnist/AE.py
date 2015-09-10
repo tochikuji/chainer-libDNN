@@ -1,7 +1,6 @@
 # example of Convolutional Auto-encoder with layer visualization
 
 from libdnn import AutoEncoder
-import libdnn.visualizer as V
 import chainer
 import chainer.functions as F
 import chainer.optimizers as Opt
