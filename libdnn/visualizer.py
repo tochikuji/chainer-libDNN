@@ -14,21 +14,31 @@ class Visualizer(object):
 
         plt.subplots_adjust(hspace=0.5)
 
-    def __convert_filters(self, layer):
+    def __convert_filters(self, layer, shape=(), T=False):
         layer = self.model[layer]
         self.bitmap = []
-        weight = chainer.cuda.to_cpu(layer.W)
-        for bitmap in weight:
-            self.bitmap.append(bitmap[0])
+        weight = []
+        if not T:
+            weight = chainer.cuda.to_cpu(layer.W)
+        else:
+            weight = chainer.cuda.to_cpu(layer.W.T)
 
-    def plot_filters(self, layer):
-        self.__convert_filters(layer)
+        if shape:
+            for bitmap in weight:
+                self.bitmap.append(bitmap.reshape(shape))
+        else:
+            for bitmap in weight:
+                self.bitmap.append(bitmap[0])
+
+    def plot_filters(self, layer, shape=(), T=False, title=True):
+        self.__convert_filters(layer, shape, T)
         N = len(self.bitmap)
         nrow = int(numpy.sqrt(N)) + 1
 
         for i in range(N):
             ax = plt.subplot(nrow, nrow, i + 1)
-            ax.set_title('filter %d' % (i + 1), fontsize=10)
+            if title:
+                ax.set_title('filter %d' % (i + 1), fontsize=10)
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
 
@@ -36,8 +46,8 @@ class Visualizer(object):
 
         plt.show()
 
-    def write_filters(self, layer, path='./', identifier='img', type='bmp'):
-        self.__convert_filters(layer)
+    def write_filters(self, layer, path='./', identifier='img', type='bmp', shape=(), T=False):
+        self.__convert_filters(layer, shape, T)
         N = len(self.bitmap)
         # length of file indexes
         maxlen = int(numpy.log10(N)) + 1

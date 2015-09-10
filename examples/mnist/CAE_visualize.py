@@ -15,6 +15,7 @@ model = chainer.FunctionSet(
     dec_conv=F.Convolution2D(64, 1, 5, pad=2)
 )
 
+
 def forward(self, x, train):
     if train:
         x = F.dropout(x, ratio=0.4)
@@ -24,7 +25,7 @@ def forward(self, x, train):
 
     return h
 
-ae = AutoEncoder(model, gpu=0)
+ae = AutoEncoder(model, gpu=-1)
 ae.set_forward(forward)
 ae.load_param('./cae.param.npy')
 
@@ -33,6 +34,7 @@ imager.plot_filters('enc_conv')
 imager.plot_filters('dec_conv')
 mnist = fetch_mldata('MNIST original', data_home='.')
 mnist.data = mnist.data.astype(numpy.float32) / 255
+
 
 def output(self, x, layer):
     h = self.model.enc_conv(x)

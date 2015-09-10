@@ -9,8 +9,8 @@ from sklearn.datasets import fetch_mldata
 
 
 model = chainer.FunctionSet(
-    fh1=F.Linear(28 ** 2, 200),
-    fh3=F.Linear(200, 28 ** 2),
+    fh1=F.Linear(28 ** 2, 100),
+    fh3=F.Linear(100, 28 ** 2),
 )
 
 
@@ -23,7 +23,7 @@ def forward(self, x, train):
 
     return h
 
-ae = AutoEncoder(model, gpu=0)
+ae = AutoEncoder(model, gpu=-1)
 ae.set_forward(forward)
 ae.set_optimizer(Opt.Adam)
 
@@ -33,7 +33,7 @@ mnist.data = mnist.data.astype(numpy.float32) / 255
 train_data = mnist.data[perm][:60000]
 test_data = mnist.data[perm][60000:]
 
-for epoch in range(300):
+for epoch in range(100):
     print('epoch : %d' % (epoch + 1))
     err = ae.train(train_data, batchsize=200)
     print(err)
