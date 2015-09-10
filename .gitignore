@@ -6,3 +6,5 @@ __pychache__/
 dist/
 *.egg-info/
 build/
+*.mat
+*.log
