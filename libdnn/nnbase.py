@@ -16,7 +16,13 @@ class NNBase(object):
         self.gpu = gpu
 
         if self.gpu >= 0:
-            chainer.cuda.init(self.gpu)
+            # if using pyCUDA version (v1.2.0 earlier)
+            if chainer.__version__ <= '1.2.0':
+                chainer.cuda.init(self.gpu)
+            # CuPy (1.3.0 later) version
+            else:
+                chainer.cuda.get_device(self.gpu).use()
+
             self.model = self.model.to_gpu()
 
     @abstractmethod
@@ -74,6 +80,6 @@ class NNBase(object):
         param = numpy.load(src)
         self.model.copy_parameters_from(param)
 
-        # by this process, model parameters is cpu_array now
+        # by this process, model parameters to be cpu_array
         if self.gpu >= 0:
             self.model = self.model.to_gpu()
