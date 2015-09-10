@@ -21,8 +21,8 @@ For more details about license, refer to 'LICENSE'.
 
 # Usage
 ## Define networks
-You have to define network structure and specify loss-function and optimizer method.
-It will be ready for train.
+You only need to DO define network, forwarding rules.  
+And then, enjoy your deeeep neural network power with `train` and `test`.
 ```python
 from libdnn import Classifier
 import chainer
@@ -64,7 +64,7 @@ network.save_param('network.param.npy')
 ```
 
 ## Visualization
-Visualizer class provides filter visualization for Convolution neural network(CNN).
+Visualizer class provides filter visualization on your trained network.
 
 ```python
 from libdnn import Classifier
