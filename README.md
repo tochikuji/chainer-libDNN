@@ -233,4 +233,4 @@ It has only one difference from `write_output` that is source image would be exp
 It requires parameters same as `write_output`.
 
 ## Author
-Aiga SUZUKI\<ai-suzuki@aist.go.jp, tochikuji@gmail.com>
+Aiga SUZUKI\<ai-suzuki@aist.go.jp>
