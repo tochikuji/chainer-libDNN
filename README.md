@@ -185,18 +185,26 @@ height, width is optional. If you didn't specify, filter size will be auto-detec
 In most cases, you needn't specify these value explicitly.
 
 #### View filters on matplotliib
-`Visualizer.plot_filters(self, layer)`  
-View all filters on matplotlib.  
+`Visualizer.plot_filters(self, layer, shape, T, title)`  
+View all filters on matplotlib.
+This will break program running by default.  
 1 argument `layer` is neccesary. `layer` expects a name of layer that you declared network definition.  
-This will break program running by default.
+`shape` and `T` are optinal. They will be required by needs of fully-connected layer Visualization 
+(e.g. fully-connected autoencoder).  
+`shape` expect tuple object. It is a filter size specification like `(height, width)`.  
+And if `T` is True, layer weights will transposed (for decoding layers).  
+`title` is optional. By default, each filter has a title like filter\_xxx, 
+but it often overlap on another filter images.  
+If you needn't to show titles, set `T=False`.  
 
 #### Write filters to image file
-`Visualizer.write_filters(self, layer, path='./', identifier='img', type='bmp')`  
+`Visualizer.write_filters(self, layer, path='./', identifier='img', type='bmp', shape, T)`  
 1 argument `layer` is necessary, same as `plot_filters`.  
 `path` is a path to store images. It will store current directory by default.  
 `identifier` is a identifier(prefix) of image files. like 'idenfier_00xxx.jpg'  
 `type` is a image data format. It will be Windows Bitmap Image format by default.  
-We recommend you to use uncompressed formats(e.g. bmp, tiff, pgm etc.)
+We recommend you to use uncompressed formats(e.g. bmp, tiff, pgm etc.)  
+`shape, T` are same as `plot_filters`.
 
 #### Write filters on CSV
 `Visualizer.save_raw_filter(self, dst)`  
