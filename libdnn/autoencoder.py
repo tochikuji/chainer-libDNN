@@ -23,7 +23,7 @@ class AutoEncoder(NNBase):
     def validate(self, x_data, train=False):
         y = self.forward(x_data, train=train)
         if self.gpu >= 0:
-            x_data = chainer.to_gpu(x_data)
+            x_data = chainer.cuda.to_gpu(x_data)
 
         x = chainer.Variable(x_data)
 
