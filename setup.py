@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='chainer-libdnn',
-      version='2.0.0',
+      version='2.0.2',
       description='General utilities for neural networs with chainer',
       author='Aiga SUZUKI',
       author_email='ai-suzuki@aist.go.jp',
