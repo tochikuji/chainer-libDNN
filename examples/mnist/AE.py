@@ -33,7 +33,7 @@ mnist.data = mnist.data.astype(numpy.float32) / 255
 train_data = mnist.data[perm][:60000]
 test_data = mnist.data[perm][60000:]
 
-for epoch in range(100):
+for epoch in range(10):
     print('epoch : %d' % (epoch + 1))
     err = ae.train(train_data, batchsize=200)
     print(err)
