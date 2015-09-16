@@ -185,7 +185,7 @@ height, width is optional. If you didn't specify, filter size will be auto-detec
 In most cases, you needn't specify these value explicitly.
 
 #### View filters on matplotliib
-`Visualizer.plot_filters(self, layer, shape, T, title)`  
+`Visualizer.plot_filters(self, layer, shape, T, title, interpolation)`  
 View all filters on matplotlib.
 This will break program running by default.  
 1 argument `layer` is neccesary. `layer` expects a name of layer that you declared network definition.  
@@ -196,6 +196,8 @@ And if `T` is True, layer weights will transposed (for decoding layers).
 `title` is optional. By default, each filter has a title like filter\_xxx, 
 but it often overlap on another filter images.  
 If you needn't to show titles, set `T=False`.  
+`interpolation` is optional. If `interpolation == True`, it enable pixel interpolation to filter visualization.  
+It will be set to `False` by default.
 
 #### Write filters to image file
 `Visualizer.write_filters(self, layer, path='./', identifier='img', type='bmp', shape, T)`  
