@@ -73,7 +73,8 @@ class NNBase(object):
         # This causes step-by-step saving each epochs with gpu
         param = numpy.array(self.model.to_cpu().parameters)
         numpy.save(dst, param)
-        self.model.to_gpu()
+        if self.gpu >= 0:
+            self.model.to_gpu()
 
     # load pre-trained network parameters from file
     def load_param(self, src='./network.param.npy'):
