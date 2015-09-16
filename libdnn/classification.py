@@ -50,8 +50,8 @@ class Classifier(NNBase):
             err.backward()
             self.optimizer.update()
 
-            sum_error += float(chainer.cuda.to_cpu(err.data)) * batchsize
-            sum_accuracy += float(chainer.cuda.to_cpu(acc.data)) * batchsize
+            sum_error += float(chainer.cuda.to_cpu(err.data)) * len(x_batch)
+            sum_accuracy += float(chainer.cuda.to_cpu(acc.data)) * len(x_batch)
             action()
 
         return sum_error / N, sum_accuracy / N
@@ -69,8 +69,8 @@ class Classifier(NNBase):
 
             err, acc = self.validate(x_batch, t_batch, train=False)
 
-            sum_error += float(chainer.cuda.to_cpu(err.data)) * batchsize
-            sum_accuracy += float(chainer.cuda.to_cpu(acc.data)) * batchsize
+            sum_error += float(chainer.cuda.to_cpu(err.data)) * len(x_batch)
+            sum_accuracy += float(chainer.cuda.to_cpu(acc.data)) * len(x_batch)
             action()
 
         return sum_error / N, sum_accuracy / N
