@@ -4,10 +4,6 @@ import libdnn.visualizer as V
 from libdnn import Classifier
 import chainer
 import chainer.functions as F
-import numpy
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from sklearn.datasets import fetch_mldata
 
 
 model = chainer.FunctionSet(
@@ -20,6 +16,7 @@ model = chainer.FunctionSet(
     fl5=F.Linear(576, 10)
 )
 
+
 def forward(self, x, train):
     h = F.max_pooling_2d(F.relu(model.bn1(model.conv1(x))), 2)
     h = F.relu(model.bn2(model.conv2(h)))
@@ -30,11 +27,11 @@ def forward(self, x, train):
     return y
 
 
-cnn = Classifier(model, gpu=0)
+cnn = Classifier(model, gpu=-1)
 cnn.set_forward(forward)
 cnn.load_param('./cnn.param.npy')
 
 imager = V.Visualizer(cnn)
-imager.plot_filters('conv1')
-imager.plot_filters('conv2')
-imager.plot_filters('conv3')
+imager.plot_filters('conv1', interpolation=True)
+imager.plot_filters('conv2', title=False, interpolation=True)
+imager.plot_filters('conv3', title=False, interpolation=True)

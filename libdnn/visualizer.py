@@ -30,7 +30,11 @@ class Visualizer(object):
             for bitmap in weight:
                 self.bitmap.append(bitmap[0])
 
-    def plot_filters(self, layer, shape=(), T=False, title=True):
+    def plot_filters(self, layer, shape=(), T=False, title=True, interpolation=False):
+        int_mode = 'none'
+        if interpolation:
+            int_mode = 'hermite'
+
         self.__convert_filters(layer, shape, T)
         N = len(self.bitmap)
         nrow = int(numpy.sqrt(N)) + 1
@@ -42,7 +46,7 @@ class Visualizer(object):
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
 
-            plt.imshow(self.bitmap[i], interpolation='none', cmap=matplotlib.cm.gray)
+            plt.imshow(self.bitmap[i], interpolation=int_mode, cmap=matplotlib.cm.gray)
 
         plt.show()
 

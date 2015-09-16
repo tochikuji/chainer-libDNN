@@ -16,6 +16,7 @@ model = chainer.FunctionSet(
     fl5=F.Linear(576, 10)
 )
 
+
 def forward(self, x, train):
     h = F.max_pooling_2d(F.relu(model.bn1(model.conv1(x))), 2)
     h = F.relu(model.bn2(model.conv2(h)))
@@ -26,7 +27,7 @@ def forward(self, x, train):
     return y
 
 
-cnn = Classifier(model, gpu=0)
+cnn = Classifier(model, gpu=-1)
 cnn.set_forward(forward)
 
 mnist = fetch_mldata('MNIST original', data_home='.')
