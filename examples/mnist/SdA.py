@@ -41,7 +41,7 @@ def decode(self, x, layer=None, train=False):
 
     return x
 
-sda = StackedAutoEncoder(model, gpu=-1)
+sda = StackedAutoEncoder(model, gpu=0)
 sda.set_order(('enc1', 'enc2'), ('dec2', 'dec1'))
 sda.set_optimizer(Opt.AdaDelta)
 sda.set_encode(encode)
