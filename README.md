@@ -115,15 +115,15 @@ If you want to use GPGPU, set `gpu` as your CUDA device ID.
 `@abstructmethod forward(self, x, train)`  
 It is pure virtual function, you must override this method on instance or subclass/derivered class by `set_forward`.  
 3 arguments needed, `self` is a magic variable, `x`, is `chainer.Variable` instance and `train` is training stage flag (some networks e.g. AutoEncoder needed is this is training input or not).  
-Define feedforward Computation as you like. and it must return output of neural network(isa `chainer.Variable`).  
+Define feedforward computation as you like. and it must return output of neural network(isa `chainer.Variable`).  
 You needn't to care about `gpu`, it will be automatically converted properly.
 
 #### Override forward method
 `set_forward(self, func)`  
-This method will override `CNNBase.forward` as specified feedforward function.  
+This method will override `NNBase.forward` as specified feedforward function.  
 1 argument, isa `function` is needed.
 
-#### See specified layer activations
+#### Get specified layer activations
 `@abstructmethod output(self, x, layer)`  
 It it also pure virtual function, that must be Overridden by `set_output`. It is only used for visualization layer output images in `Visualizer` class.
 If you won't use these features, it will be unnecessary.  
@@ -132,7 +132,7 @@ This will be similar to `forward` function in most case. But do *NOT* reuse as `
 
 #### Override forward method
 `set_forward(self, func)`  
-This method will override `CNNBase.output` as specified feedforward function.  
+This method will override `NNBase.output` as specified feedforward function.  
 1 argument, isa `function` is needed. You needn't to care about use GPU whether or not.
 
 #### Configure loss_function
@@ -171,11 +171,54 @@ It will be './network.param.npy' by default.
 1 argument `src` is optional that specifies source file.  
 It will be './network.param.npy' same as `save_param` by default.
 
+## Stacked Autoencoder specialization
+`StackedAutoencoder` class has a little bit different interface for layerwise training.  
+It require to define extra forwarding function that is following some rules like below;  
+It has too much sugered interface, please refer to example (./examples/mnist/SdA.py)  
+
+#### Set orders of layers
+`set_order(self, encl, decl)`  
+2 arguments, `encl`, `decl` are neccesary.  
+These are tuple of layer names ordered by forward flow.
+
+#### Encoding/Decoding method
+`@abstructmethod encode(self, x, layer, train)`  
+`@abstructmethod decode(self, x, layer, train)`  
+It is pure virtual function, you must override this method on instance or
+subclass/derivered class by `set_encode / set_decode` like forwarding function.  
+3 arguments needed, `self` is a magic variable, `x`, is `chainer.Variable` instance.  
+`layer`, isa integer specifies forwarding depth. Define encode function like
+```python
+if layer == 0:
+    return x
+some calculation for x
+
+if layer == 1:
+    return x
+```
+`layer` starts at `0`, and increment when 1 layer deeper.  
+Decoding function `decode` has same requirement,
+but it starts at maxinum number in encoding function `encode` and 
+each forwarding rules has a little bit strange interface like
+```python
+if not train or layer == N: # N is a maxinum depth
+    x = F.sigmoid(self.model.decN(x)) # decode layerwise
+```
+
+Forwarding(encode input, and get decoded one) function `forward` will be defined by these 
+encode/decode rules automatically.  
+
+#### Set encode/decode function
+`set_encode(self, func)`  
+`set_decode(self, func)`  
+This method will override encode/decode function.  
+1 argument, isa `function` is needed.
+
 ## Visualizer
 #### Constructor / Initializer
 `Visualizer.__init__(self, model)`  
 1 argument `model` is necessary.  
-`model` expects `CNNBase` instance that is defined as CNN. (no longer CNNBase.model in any cases)  
+`model` expects `NNBase` instance that is defined as CNN.
 
 #### Convert filters to image data
 `Visualizer.convert_filters(self, layer, height, width)`  

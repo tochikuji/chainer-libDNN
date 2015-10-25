@@ -21,7 +21,7 @@ def forward(self, x, train):
     h = F.max_pooling_2d(F.relu(model.bn1(model.conv1(x))), 2)
     h = F.relu(model.bn2(model.conv2(h)))
     h = F.max_pooling_2d(F.relu(model.conv3(h)), 2)
-    h = F.dropout(F.relu(model.fl4(h)), train=True)
+    h = F.dropout(F.relu(model.fl4(h)), train=False)
     y = model.fl5(h)
 
     return y
@@ -42,10 +42,10 @@ test_label = mnist.target[perm][60000:]
 for epoch in range(15):
     print('epoch : %d' % (epoch + 1))
     err, acc = cnn.train(train_data, train_label, batchsize=200)
-    print(err)
+    print(acc, err)
     perm = numpy.random.permutation(len(test_data))
     terr, tacc = cnn.test(test_data[perm][:100], test_label[perm][:100])
-    print(terr)
+    print(tacc, terr)
 
     with open('cnn.log', mode='a') as f:
         f.write("%d %f %f\n" % (epoch + 1, err, terr))
